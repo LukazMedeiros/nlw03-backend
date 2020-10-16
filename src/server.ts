@@ -1,10 +1,15 @@
 import express, { response } from 'express';
+import 'express-async-errors';
 import './database/conexao';
 import Rotas from './routes';
+import Path from 'path';
+import Erro from './errors/erros';
 
 const server = express();
 server.use(express.json());
-server.use(Rotas)
+server.use(Rotas);
+server.use('/uploads', express.static(Path.join(__dirname, '..', 'uploads')));
+server.use(Erro);
 
 
 

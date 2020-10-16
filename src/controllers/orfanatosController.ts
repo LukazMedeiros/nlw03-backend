@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { getRepository } from "typeorm";
 import Orfanatos from '../models/orfanato';
+import orfanatoView from '../views/orfanatosView';
 
 export default {
     
@@ -39,14 +40,18 @@ export default {
     
     async listar(request:Request, response:Response){
         const orfanatosRepository = getRepository(Orfanatos)
-        const orfanatos = await orfanatosRepository.find()
-        return response.json(orfanatos) 
+        const orfanatos = await orfanatosRepository.find({
+            relations: ['imagens']
+        })
+        return response.json(orfanatoView.renderVarios(orfanatos))  
     },
     
     async buscarEspecifico(request:Request, response:Response){
         const {id} = request.params;
         const orfanatosRepository = getRepository(Orfanatos)
-        const orfanato = await orfanatosRepository.findOneOrFail(id)
-        return response.json(orfanato) 
+        const orfanato = await orfanatosRepository.findOneOrFail(id, {
+            relations: ['imagens']
+        })
+        return response.json(orfanatoView.render(orfanato)) 
     },
 }
